@@ -17,20 +17,25 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/square.png";
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
+const navItems = ["Home", "About", "Register"];
 
-function Navbar() {
+// eslint-disable-next-line react/prop-types
+function Navbar({ user }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const filteredNavItems = user
+    ? navItems.filter((item) => item !== "Register")
+    : navItems;
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Divider />
       <List>
-        {navItems.map((navItem) => (
+        {filteredNavItems.map((navItem) => (
           <ListItem key={navItem} disablePadding>
             <ListItemButton
               sx={{ textAlign: "center" }}
@@ -74,7 +79,7 @@ function Navbar() {
             </Link>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((navItem) => (
+            {filteredNavItems.map((navItem) => (
               <Button key={navItem} sx={{ color: "#fff" }}>
                 <Link
                   style={{ textDecoration: "none", color: "#fff" }}
