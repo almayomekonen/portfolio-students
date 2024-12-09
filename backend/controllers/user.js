@@ -29,4 +29,35 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if the email already exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign({ id: user._id }, "supersecretkey", {
+      expiresIn: "1h",
+    });
+
+    res
+      .status(201)
+      .json({ message: "logged in successfully", userData: {userId: user._id, email: user.email, token } });
+
+    
+      
+  } catch (error) {
+    console.log("Error logging in!", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { registerUser, loginUser };
